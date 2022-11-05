@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 from collections import defaultdict
 import os
 import re
