@@ -27,7 +27,11 @@ for file_name in g.ls_files().split("\n"):
         continue
 
     with open(file_name) as file:
-        lines = file.readlines()
+        try:
+            lines = file.readlines()
+        except UnicodeDecodeError:
+            # Skip non-utf encoded files
+            continue
         lineno = 0
         for line in lines:
             lineno += 1
