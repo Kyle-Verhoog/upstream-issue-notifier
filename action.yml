@@ -3,10 +3,6 @@ branding:
   icon: 'bell'
   color: 'blue'
 description: 'Track upstream issues in your project'
-inputs:
-  repository:
-  description: 'Repository name with owner. For example, actions/checkout'
-  default: ${{ github.repository }}
 runs:
   using: 'docker'
   image: 'Dockerfile'
