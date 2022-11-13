@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: upstream-issue-notifier
-        uses: Kyle-Verhoog/upstream-issue-notifier@v0.0.4
+        uses: Kyle-Verhoog/upstream-issue-notifier@v0.0.6
 ```
 
 
