@@ -124,6 +124,8 @@ def get_issue_locations(
 
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/2
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/3
+# Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/15
+
 
 
 if __name__ == "__main__":
