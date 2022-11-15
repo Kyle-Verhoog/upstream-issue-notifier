@@ -3,6 +3,8 @@ on:
   push:
 inputs:
   auth_token:
+  description: 'github token'
+  required: true
   default: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   run_script:
