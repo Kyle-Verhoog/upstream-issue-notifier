@@ -17,11 +17,12 @@ IGNORE_DIRS = list(IGNORE_DIRS.split(",") if IGNORE_DIRS else [])
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 DRY_RUN = bool(os.getenv("DRY_RUN", False))
 DRY_RUN = True
-
-assert GH_TOKEN is not None
-
-
 logging.basicConfig(level=LOG_LEVEL)
+
+if GH_TOKEN is None:
+    logging.warning("not Github token set, likely to hit api limit")
+
+
 
 
 def repo_filenames(repo: git.Git) -> List[str]:
@@ -119,15 +120,21 @@ def get_closed_issues(
     return closed_issues
 
 
-def get_issue_locations(
-    issues: List[FileIssue], issue: FileIssue
-) -> List[Tuple[str, int]]:
+def get_unique_issues(
+    issues: List[FileIssue]
+) -> Dict[str, List[FileIssue]]:
     """Return all the name and line number of all the files that contain the issue"""
-    locations = []
-    for i in issues:
-        if i.ref == issue.ref:
-            locations.append((i.filename, i.lineno))
-    return locations
+    dedupe_issues = {}
+    for issue in issues:
+        for ref in dedupe_issues:
+            # if the issues ref is already in dedupe issues, we just add the issue to the list under the ref number
+            if ref == issue.ref:
+                dedupe_issues[ref].append(issue)
+                break
+        # if the issue ref isn't in dedupe issues, we add it
+        else:
+            dedupe_issues[issue.ref] = [issue]
+    return dedupe_issues
 
 
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/2
@@ -135,6 +142,18 @@ def get_issue_locations(
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/15
 #  https://github.com/ZStriker19/upstream-issue-notifier/issues/2
 
+# https://github.com/ZStriker19/upstream-issue-notifier/issues/2
+
+def get_issue_locations(
+    unique_issues: Dict[str, List[FileIssue]], closed_issue: FileIssue
+) -> List[Tuple[str, int]]:
+    """Return all the name and line number of all the files that contain the issue"""
+    locations = []
+    for ref, issues in unique_issues.items():
+        for issue in issues:
+            if issue.ref == closed_issue.ref:
+                locations.append((closed_issue.filename, closed_issue.lineno))
+    return locations
 
 
 if __name__ == "__main__":
@@ -155,9 +174,11 @@ if __name__ == "__main__":
     server_url = os.getenv("GITHUB_SERVER_URL")
 
     repo_issues = gh_repo.get_issues()
-
+    unique_issues = get_unique_issues(issues)
     for (issue, gh_issue) in closed_issues:
-        locations = get_issue_locations(issues, issue)
+        locations = get_issue_locations(unique_issues, issue)
+
+        
         files_str = "\n".join(
             f"  - [{fn}:{ln}]({server_url}/{GH_REPO}/blob/{repo_ref}/{fn}#L{ln})"
             for fn, ln in locations
@@ -172,7 +193,7 @@ The code referencing this issue could potentially be updated.
     """
         for repo_issue in repo_issues:
             if not DRY_RUN:
-                if issue.ref in repo_issue.title:
+                if issue.ref in repo_issue.title or issue.ref in repo_issue.body:
                     # repo issue already exists for the upstream issue, update it
                     # in case any references have been removed.
                     repo_issue.edit(
