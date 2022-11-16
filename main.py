@@ -15,6 +15,8 @@ LABELS = list(LABELS.split(",")) if LABELS else []
 IGNORE_DIRS = os.getenv("IGNORE_DIRS")
 IGNORE_DIRS = list(IGNORE_DIRS.split(",") if IGNORE_DIRS else [])
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+DRY_RUN = bool(os.getenv("DRY_RUN", False))
+DRY_RUN = True
 
 assert GH_TOKEN is not None
 
@@ -101,15 +103,19 @@ def get_closed_issues(
 ) -> List[Tuple[FileIssue, github.Issue.Issue]]:
     closed_issues = []
     for repo, issues in issues_by_repo(issues).items():
-        gh_repo = gh.get_repo(repo)
-        for issue in issues:
-            try:
-                gh_issue = gh_repo.get_issue(number=issue.num)
-            except github.GithubException.UnknownObjectException:
-                logging.error("failed to look up issue %r", issue.ref)
-            else:
-                if gh_issue.state == "closed":
-                    closed_issues.append((issue, gh_issue))
+        try:
+            gh_repo = gh.get_repo(repo)
+        except github.GithubException.UnknownObjectException:
+            logging.error("failed to look up issue %r", issue.ref)
+        else:
+            for issue in issues:
+                try:
+                    gh_issue = gh_repo.get_issue(number=issue.num)
+                except github.GithubException.UnknownObjectException:
+                    logging.error("failed to look up issue %r", issue.ref)
+                else:
+                    if gh_issue.state == "closed":
+                        closed_issues.append((issue, gh_issue))
     return closed_issues
 
 
@@ -165,16 +171,23 @@ has been closed.
 The code referencing this issue could potentially be updated.
     """
         for repo_issue in repo_issues:
-            if issue.ref in repo_issue.title:
-                # repo issue already exists for the upstream issue, update it
-                # in case any references have been removed.
-                repo_issue.edit(
-                    body=body,
-                )
-                break
+            if not DRY_RUN:
+                if issue.ref in repo_issue.title:
+                    # repo issue already exists for the upstream issue, update it
+                    # in case any references have been removed.
+                    repo_issue.edit(
+                        body=body,
+                    )
+                    break
+            else:
+                logging.info(f"Would edit issue number {repo_issue.number} in repo {GH_REPO}:\nUpstream issue {issue.ref}\n\n {body}"),
+
         else:
-            gh_repo.create_issue(
-                title=f"Upstream issue {issue.ref} closed",
-                body=body,
-                labels=LABELS,
-            )
+            if not DRY_RUN:
+                gh_repo.create_issue(
+                    title=f"Upstream issue {issue.ref} closed",
+                    body=body,
+                    labels=LABELS,
+                )
+            else:
+                logging.info(f"Would create issue in repo {GH_REPO}:\nUpstream issue {issue.ref} {GH_REPO}\n\n {body}"),
