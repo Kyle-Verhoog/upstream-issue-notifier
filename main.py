@@ -123,7 +123,7 @@ def get_closed_issues(
 def get_unique_issues(
     issues: List[FileIssue]
 ) -> Dict[str, List[FileIssue]]:
-    """Return all the name and line number of all the files that contain the issue"""
+    """Return issues without duplicates based on ref"""
     dedupe_issues = {}
     for issue in issues:
         for ref in dedupe_issues:
