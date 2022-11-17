@@ -14,6 +14,7 @@ LABELS = os.getenv("LABELS")
 LABELS = list(LABELS.split(",")) if LABELS else []
 IGNORE_DIRS = os.getenv("IGNORE_DIRS")
 IGNORE_DIRS = list(IGNORE_DIRS.split(",") if IGNORE_DIRS else [])
+IGNORE_DIRS = ["tests"]
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 DRY_RUN = bool(os.getenv("DRY_RUN", False))
 DRY_RUN = True
