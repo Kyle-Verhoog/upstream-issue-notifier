@@ -153,6 +153,7 @@ def get_issue_locations(
         for issue in issues:
             if issue.ref == closed_issue.ref:
                 locations.append((closed_issue.filename, closed_issue.lineno))
+    logging.info("\n\n")
     return locations
 
 
@@ -177,6 +178,7 @@ if __name__ == "__main__":
     unique_issues = get_unique_issues(issues)
     for (issue, gh_issue) in closed_issues:
         locations = get_issue_locations(unique_issues, issue)
+        logging.info(locations)
 
         
         files_str = "\n".join(
