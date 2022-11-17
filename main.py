@@ -170,6 +170,7 @@ if __name__ == "__main__":
 
     gh = github.Github(os.getenv("GITHUB_TOKEN"))
     closed_issues = get_closed_issues(issues, gh)
+    logging.info(closed_issues)
     logging.info("found %r closed issues", len(closed_issues))
 
     GH_REPO = os.getenv("GITHUB_REPOSITORY")
