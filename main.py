@@ -14,7 +14,6 @@ LABELS = os.getenv("LABELS")
 LABELS = list(LABELS.split(",")) if LABELS else []
 IGNORE_DIRS = os.getenv("IGNORE_DIRS")
 IGNORE_DIRS = list(IGNORE_DIRS.split(",") if IGNORE_DIRS else [])
-IGNORE_DIRS = ["tests"]
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 DRY_RUN = bool(os.getenv("DRY_RUN", False))
 DRY_RUN = True
@@ -36,7 +35,7 @@ def filter_filenames(filenames: List[str]) -> List[str]:
         if not os.path.isfile(filename):
             continue
         if any(filename.startswith(ignore) for ignore in IGNORE_DIRS):
-            logging.debug("Ignoring file %r due to IGNORE_DIRS", filename)
+            logging.info("Ignoring file %r due to IGNORE_DIRS", filename)
             continue
         filtered_filenames.append(filename)
     return filtered_filenames
