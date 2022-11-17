@@ -15,5 +15,3 @@ jobs:
       shell: bash
     - run: pip install -r requirements.txt
     - run: python main.py
-      env:
-        GITHUB_TOKEN: ${{ secrets.github.token }}
