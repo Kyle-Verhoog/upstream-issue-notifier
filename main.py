@@ -115,7 +115,7 @@ def get_closed_issues(
                 except github.GithubException.UnknownObjectException:
                     logging.error("failed to look up issue %r", issue.ref)
                 else:
-                    if gh_issue.state == "closed" and (issue, gh_issue) not in closed_issues:
+                    if gh_issue.state == "closed" and gh_issue not in [ghi[1] for ghi in closed_issues]:
                         closed_issues.append((issue, gh_issue))
     return closed_issues
 
