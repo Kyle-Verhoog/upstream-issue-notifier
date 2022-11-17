@@ -192,7 +192,7 @@ The code referencing this issue could potentially be updated.
                     )
                     break
             else:
-                logging.info(f"Would edit issue number {repo_issue.number} in repo {GH_REPO}:\nUpstream issue {issue.ref}\n\n{body}"),
+                logging.info(f"Would edit issue number {repo_issue.number} in repo `{GH_REPO}`:\nUpstream issue {issue.ref}\n\n{body}"),
 
         else:
             if not DRY_RUN:
