@@ -127,36 +127,23 @@ def get_unique_issues(
     dedupe_issues = {}
     for issue in issues:
         for ref in dedupe_issues:
-            # if the issues ref is already in dedupe issues, we just add the issue to the list under the ref number
             if ref == issue.ref:
                 dedupe_issues[ref].append(issue)
                 break
-        # if the issue ref isn't in dedupe issues, we add it
         else:
             dedupe_issues[issue.ref] = [issue]
     return dedupe_issues
 
-
-# Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/2
-# Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/3
-# Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/15
-#  https://github.com/ZStriker19/upstream-issue-notifier/issues/2
-
-# https://github.com/ZStriker19/upstream-issue-notifier/issues/2
 
 def get_issue_locations(
     unique_issues: Dict[str, List[FileIssue]], closed_issue: FileIssue
 ) -> List[Tuple[str, int]]:
     """Return all the name and line number of all the files that contain the issue"""
     locations = []
-    # unique_issues.items will have 3 instances of fileissue per the singular ref
-    # we loop through the issues and compare, if there is a file issue that matches the closed one,
-    # we want to append it to the locations by grabbing the closed_issue.filename, and closed_issue.lineo
     for ref, issues in unique_issues.items():
         for issue in issues:
             if issue.ref == closed_issue.ref:
                 locations.append((issue.filename, issue.lineno))
-    logging.info("\n\n")
     return locations
 
 
@@ -170,7 +157,6 @@ if __name__ == "__main__":
 
     gh = github.Github(os.getenv("GITHUB_TOKEN"))
     closed_issues = get_closed_issues(issues, gh)
-    logging.info(closed_issues)
     logging.info("found %r closed issues", len(closed_issues))
 
     GH_REPO = os.getenv("GITHUB_REPOSITORY")
@@ -182,7 +168,6 @@ if __name__ == "__main__":
     unique_issues = get_unique_issues(issues)
     for (issue, gh_issue) in closed_issues:
         locations = get_issue_locations(unique_issues, issue)
-        logging.info(locations)
 
         
         files_str = "\n".join(
