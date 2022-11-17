@@ -35,7 +35,7 @@ def filter_filenames(filenames: List[str]) -> List[str]:
         if not os.path.isfile(filename):
             continue
         if any(filename.startswith(ignore) for ignore in IGNORE_DIRS):
-            logging.info("Ignoring file %r due to IGNORE_DIRS", filename)
+            logging.debug("Ignoring file %r due to IGNORE_DIRS", filename)
             continue
         filtered_filenames.append(filename)
     return filtered_filenames
