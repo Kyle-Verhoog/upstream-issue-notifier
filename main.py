@@ -7,6 +7,7 @@ from typing import Dict, List, NamedTuple, Set, Tuple
 
 import git
 import github
+from github.GithubException import UnknownObjectException
 
 
 GH_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -106,7 +107,7 @@ def get_closed_issues(
     for repo, issues in issues_by_repo(issues).items():
         try:
             gh_repo = gh.get_repo(repo)
-        except github.GithubException.UnknownObjectException:
+        except UnknownObjectException:
             logging.error("failed to look up issue %r", issue.ref)
         else:
             for issue in issues:
