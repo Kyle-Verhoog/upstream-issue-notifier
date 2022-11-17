@@ -202,4 +202,4 @@ The code referencing this issue could potentially be updated.
                     labels=LABELS,
                 )
             else:
-                logging.info(f"Would create issue in repo {GH_REPO}:\nUpstream issue {issue.ref} {GH_REPO}\n\n {body}"),
+                logging.info(f"Would create issue in repo '{GH_REPO}':\nUpstream issue {issue.ref}\n\n{body}"),
