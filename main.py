@@ -149,10 +149,13 @@ def get_issue_locations(
 ) -> List[Tuple[str, int]]:
     """Return all the name and line number of all the files that contain the issue"""
     locations = []
+    # unique_issues.items will have 3 instances of fileissue per the singular ref
+    # we loop through the issues and compare, if there is a file issue that matches the closed one,
+    # we want to append it to the locations by grabbing the closed_issue.filename, and closed_issue.lineo
     for ref, issues in unique_issues.items():
         for issue in issues:
             if issue.ref == closed_issue.ref:
-                locations.append((closed_issue.filename, closed_issue.lineno))
+                locations.append((issue.filename, issue.lineno))
     logging.info("\n\n")
     return locations
 
