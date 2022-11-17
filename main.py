@@ -136,7 +136,7 @@ def get_unique_issues(
 
 
 def get_issue_locations(
-    unique_issues: Dict[str, List[FileIssue]], closed_issue: FileIssue
+    issues: Dict[str, List[FileIssue]], issue: FileIssue
 ) -> List[Tuple[str, int]]:
     """Return all the name and line number of all the files that contain the issue"""
     locations = []
@@ -192,7 +192,7 @@ The code referencing this issue could potentially be updated.
                     )
                     break
             else:
-                logging.info(f"Would edit issue number {repo_issue.number} in repo {GH_REPO}:\nUpstream issue {issue.ref}\n\n {body}"),
+                logging.info(f"Would edit issue number {repo_issue.number} in repo `{GH_REPO}`:\nUpstream issue {issue.ref}\n\n{body}"),
 
         else:
             if not DRY_RUN:
@@ -202,4 +202,4 @@ The code referencing this issue could potentially be updated.
                     labels=LABELS,
                 )
             else:
-                logging.info(f"Would create issue in repo {GH_REPO}:\nUpstream issue {issue.ref} {GH_REPO}\n\n {body}"),
+                logging.info(f"Would create issue in repo '{GH_REPO}':\nUpstream issue {issue.ref}\n\n{body}"),
