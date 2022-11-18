@@ -136,7 +136,7 @@ def get_unique_issues(
 
 
 def get_issue_locations(
-    issues: Dict[str, List[FileIssue]], issue: FileIssue
+    issues: Dict[str, List[FileIssue]], closed_issue: FileIssue
 ) -> List[Tuple[str, int]]:
     """Return all the name and line number of all the files that contain the issue"""
     locations = []
