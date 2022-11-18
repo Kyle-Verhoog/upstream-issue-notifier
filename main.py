@@ -146,7 +146,7 @@ def main():
     logging.info("found %r closed issues", len(closed_issues))
 
     unique_closed_issues = get_unique_issues([ci[0] for ci in closed_issues])
-    logging.debug("unique closed issues: %r", unique_closed_issues)
+    logging.info("unique closed issues: %r", unique_closed_issues)
 
     GH_REPO = os.getenv("GITHUB_REPOSITORY")
     gh_repo = gh.get_repo(GH_REPO)
@@ -169,30 +169,29 @@ has been closed.
 The code referencing this issue could potentially be updated.
     """
         for repo_issue in repo_issues:
-            if not DRY_RUN:
-                if issue_ref in repo_issue.title:
-                    # repo issue already exists for the upstream issue, update it
-                    # in case any references have been removed.
+            if issue_ref in repo_issue.title:
+                # repo issue already exists for the upstream issue, update it
+                # in case any references have been removed.
+                if DRY_RUN:
+                    logging.info(
+                        f"Would edit issue number {repo_issue.number} in repo `{GH_REPO}`:\nUpstream issue {issue_ref}\n{body}"
+                    )
+                else:
                     repo_issue.edit(
                         body=body,
                     )
-                    break
-            else:
-                logging.info(
-                    f"Would edit issue number {repo_issue.number} in repo `{GH_REPO}`:\nUpstream issue {issue_ref}\n{body}"
-                ),
-
+                break
         else:
-            if not DRY_RUN:
+            if DRY_RUN:
+                logging.info(
+                    f"Would create issue in repo '{GH_REPO}':\nUpstream issue {issue_ref}\n{body}"
+                )
+            else:
                 gh_repo.create_issue(
                     title=f"Upstream issue {issue_ref} closed",
                     body=body,
                     labels=LABELS,
                 )
-            else:
-                logging.info(
-                    f"Would create issue in repo '{GH_REPO}':\nUpstream issue {issue_ref}\n{body}"
-                ),
 
 
 if __name__ == "__main__":
