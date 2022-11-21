@@ -169,7 +169,7 @@ has been closed.
 The code referencing this issue could potentially be updated.
     """
         for repo_issue in repo_issues:
-            if issue_ref in repo_issue.title:
+            if issue_ref in repo_issue.title or issue_ref in repo_issue.body:
                 # repo issue already exists for the upstream issue, update it
                 # in case any references have been removed.
                 if DRY_RUN:
