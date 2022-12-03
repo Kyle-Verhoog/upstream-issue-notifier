@@ -170,8 +170,14 @@ The code referencing this issue could potentially be updated.
     """
         for repo_issue in repo_issues:
             if issue_ref in repo_issue.title:
-                # repo issue already exists for the upstream issue, update it
-                # in case any references have been removed.
+                # repo issue already exists for the upstream issue
+                # if this repo issue is closed, ignore it.
+                if repo_issue.state == "closed":
+                    logging.info(
+                        f"Issue number {repo_issue.number} for upstream issue {issue_ref} already exists and is closed."
+                    )
+                    break
+                # Otherwise if still open, update it in case any references have been removed.
                 if DRY_RUN:
                     logging.info(
                         f"Would edit issue number {repo_issue.number} in repo `{GH_REPO}`:\nUpstream issue {issue_ref}\n{body}"
@@ -201,4 +207,3 @@ if __name__ == "__main__":
 # Used for testing
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/2
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/3
-# Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/20
