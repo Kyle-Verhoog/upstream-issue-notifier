@@ -201,3 +201,4 @@ if __name__ == "__main__":
 # Used for testing
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/2
 # Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/3
+# Blocked on https://github.com/Kyle-Verhoog/upstream-issue-notifier/issues/20
