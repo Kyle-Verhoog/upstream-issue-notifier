@@ -153,7 +153,7 @@ def main():
     repo_ref = os.getenv("GITHUB_REF_NAME")
     server_url = os.getenv("GITHUB_SERVER_URL")
 
-    repo_issues = gh_repo.get_issues()
+    repo_issues = gh_repo.get_issues(state="all")
     for issue_ref, issues in unique_closed_issues.items():
         locations = [(i.filename, i.lineno) for i in issues]
         files_str = "\n".join(
